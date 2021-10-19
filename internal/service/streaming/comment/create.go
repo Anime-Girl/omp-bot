@@ -14,9 +14,16 @@ func (c *DummyCommentService) Create(comment streaming.Comment) (uint64, error) 
 		return 0, fmt.Errorf("comment's text is empty")
 	}
 
+	var newID uint64 = 1
+
+	if len(c.comments) != 0 {
+		newID = c.comments[len(c.comments)-1].ID + 1
+	}
+
 	c.comments = append(c.comments, streaming.Comment{
+		ID:   newID,
 		Text: comment.Text,
 	})
 
-	return uint64(len(c.comments)), nil
+	return newID, nil
 }

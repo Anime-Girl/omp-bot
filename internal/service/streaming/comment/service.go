@@ -26,10 +26,31 @@ func NewDummyCommentService() *DummyCommentService {
 	return &DummyCommentService{}
 }
 
+func (c *DummyCommentService) CommentsCount() int {
+	return len(c.comments)
+}
+
 func (c *DummyCommentService) checkIndexOutOfRange(id int) bool {
 	return id < 0 || id >= len(c.comments)
 }
 
-func (c *DummyCommentService) CommentsCount() int {
-	return len(c.comments)
+func (c *DummyCommentService) findElementIDByCommentID(target uint64) (int, bool) {
+	l := 0
+	r := len(c.comments) - 1
+
+	for l <= r {
+		m := (l + r) / 2
+		if c.comments[m].ID == target {
+			return m, true
+		}
+
+		if c.comments[m].ID < target {
+			l = m + 1
+			continue
+		}
+
+		r = m - 1
+	}
+
+	return 0, false
 }

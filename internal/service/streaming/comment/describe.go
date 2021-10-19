@@ -1,17 +1,18 @@
 package comment
 
 import (
+	"fmt"
+
 	"github.com/ozonmp/omp-bot/internal/model/streaming"
 )
 
 func (c *DummyCommentService) Describe(comment_id uint64) (*streaming.Comment, error) {
-	comment_id--
-
-	if c.checkIndexOutOfRange(int(comment_id)) {
-		return nil, ErrIndexOutOfRange
+	id, ok := c.findElementIDByCommentID(comment_id)
+	if !ok {
+		return nil, fmt.Errorf("id does not exist")
 	}
 
-	comment := c.comments[int(comment_id)]
+	comment := c.comments[id]
 
 	return &comment, nil
 }

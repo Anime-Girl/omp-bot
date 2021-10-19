@@ -11,21 +11,32 @@ import (
 
 func (c *StreamingCommentCommander) New(inputMsg *tgbotapi.Message) {
 	args := inputMsg.CommandArguments()
-	args = strings.Trim(args, " ")
+	texts := strings.Split(args, `\\\`)
+	var createdIDs []uint64
 
-	comment := streaming.Comment{
-		Text: args,
+	for i := range texts {
+		comment := streaming.Comment{
+			Text: texts[i],
+		}
+
+		id, err := c.commentService.Create(comment)
+		if err != nil {
+			log.Printf("fail to create comment: %v", err)
+			continue
+		}
+
+		createdIDs = append(createdIDs, id)
 	}
 
-	id, err := c.commentService.Create(comment)
-	if err != nil {
-		log.Printf("fail to create comment: %v", err)
-		return
+	response := fmt.Sprintf("Comment with %v id's created", createdIDs)
+
+	if len(createdIDs) == 0 {
+		response = "Comment should not be empty"
 	}
 
 	msg := tgbotapi.NewMessage(
 		inputMsg.Chat.ID,
-		fmt.Sprintf("Comment created, it's id: %d", id),
+		response,
 	)
 
 	c.bot.Send(msg)

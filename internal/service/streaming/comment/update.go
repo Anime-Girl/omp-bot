@@ -14,13 +14,12 @@ func (c *DummyCommentService) Update(comment_id uint64, comment streaming.Commen
 		return fmt.Errorf("comment's text is empty")
 	}
 
-	comment_id--
-
-	if c.checkIndexOutOfRange(int(comment_id)) {
-		return ErrIndexOutOfRange
+	id, ok := c.findElementIDByCommentID(comment_id)
+	if !ok {
+		return fmt.Errorf("id does not exist")
 	}
 
-	c.comments[comment_id] = comment
+	c.comments[id] = comment
 
 	return nil
 }

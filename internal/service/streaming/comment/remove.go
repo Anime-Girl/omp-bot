@@ -1,18 +1,19 @@
 package comment
 
-func (c *DummyCommentService) Remove(comment_id uint64) (bool, error) {
-	comment_id--
+import "fmt"
 
-	if c.checkIndexOutOfRange(int(comment_id)) {
-		return false, ErrIndexOutOfRange
+func (c *DummyCommentService) Remove(comment_id uint64) (bool, error) {
+	id, ok := c.findElementIDByCommentID(comment_id)
+	if !ok {
+		return false, fmt.Errorf("id does not exist")
 	}
 
-	if int(comment_id) == len(c.comments)-1 {
-		c.comments = c.comments[:comment_id]
+	if c.comments[id].ID == c.comments[len(c.comments)-1].ID {
+		c.comments = c.comments[:id]
 		return true, nil
 	}
 
-	c.comments = append(c.comments[:comment_id], c.comments[comment_id+1:]...)
+	c.comments = append(c.comments[:id], c.comments[id+1:]...)
 
 	return true, nil
 }

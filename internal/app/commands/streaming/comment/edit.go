@@ -23,7 +23,8 @@ func (c *StreamingCommentCommander) Edit(inputMsg *tgbotapi.Message) {
 	}
 
 	comment := streaming.Comment{
-		Text: strings.TrimPrefix(args, fmt.Sprintf("%s ", id)),
+		ID:   uint64(commentID),
+		Text: strings.TrimPrefix(args, id),
 	}
 
 	err = c.commentService.Update(uint64(commentID), comment)

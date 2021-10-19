@@ -53,7 +53,7 @@ func (c *StreamingCommentCommander) getCommentsOutput(offset int) (string, error
 	}
 
 	for id := range comments {
-		outputMsgText += fmt.Sprintf("%d. %s\n", offset+id+1, comments[id].Text)
+		outputMsgText += fmt.Sprintf("%d. %s\n", offset+id+1, comments[id].String())
 	}
 
 	return outputMsgText, nil
